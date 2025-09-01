@@ -1,0 +1,589 @@
+{
+  "name": "Finance",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        -165
+      ],
+      "id": "813bf466-e9ee-4c30-8715-bd7c3ee39aed",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=total_volume&per_page=5&page=1",
+        "options": {
+          "batching": {
+            "batch": {}
+          },
+          "timeout": 1000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        -165
+      ],
+      "id": "dd7bfa1a-b1f8-42fd-a340-44089681d611",
+      "name": "CoinGecko-Top50"
+    },
+    {
+      "parameters": {
+        "jsCode": "// $json is each item from CoinGecko\nreturn $items().map(item => {\n  return {\n    json: {\n      // take original symbol, uppercase it, add 'USDT'\n      symbol: item.json.symbol.toUpperCase() + \"USDT\"\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -165
+      ],
+      "id": "7d3b4716-24bb-4791-b37e-5569bab99dac",
+      "name": "toUpperCase.js"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appxJjHJox2sYsKKW",
+          "mode": "list",
+          "cachedResultName": "Crypto Tracker",
+          "cachedResultUrl": "https://airtable.com/appxJjHJox2sYsKKW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl32QXBMswobW3wq",
+          "mode": "list",
+          "cachedResultName": "Coins",
+          "cachedResultUrl": "https://airtable.com/appxJjHJox2sYsKKW/tbl32QXBMswobW3wq"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Coin Name": "={{ $('CoinGecko-Top50').item.json.name }}",
+            "Symbol": "={{ $json.symbol }}",
+            "Current Price": "={{ $('CoinGecko-Top50').item.json.current_price }}",
+            "Market Cap": "={{ $('CoinGecko-Top50').item.json.market_cap }}",
+            "Price Change 24h (%)": "={{ $('CoinGecko-Top50').item.json.price_change_24h }}"
+          },
+          "matchingColumns": [
+            "Symbol"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Coin Name",
+              "displayName": "Coin Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Symbol",
+              "displayName": "Symbol",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "BInance Symbol",
+              "displayName": "BInance Symbol",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Current Price",
+              "displayName": "Current Price",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Market Cap",
+              "displayName": "Market Cap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Price Change 24h (%)",
+              "displayName": "Price Change 24h (%)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Price History",
+              "displayName": "Price History",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Holdings",
+              "displayName": "Holdings",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Total Holdings Value",
+              "displayName": "Total Holdings Value",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Number of Holders",
+              "displayName": "Number of Holders",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Average Acquisition Price",
+              "displayName": "Average Acquisition Price",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        40,
+        -165
+      ],
+      "id": "e3df7dda-8ed0-49d5-96b3-433cec89f239",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "kfcG3zxvCe72KMOL",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        220,
+        -160
+      ],
+      "id": "ec281795-ca64-41cb-81fe-e65bc2940ac2",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -520
+      ],
+      "id": "3c1a8aac-a688-4388-9a49-0915af5ad0fd",
+      "name": "Limit",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appxJjHJox2sYsKKW",
+          "mode": "list",
+          "cachedResultName": "Crypto Tracker",
+          "cachedResultUrl": "https://airtable.com/appxJjHJox2sYsKKW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl32QXBMswobW3wq",
+          "mode": "list",
+          "cachedResultName": "Coins",
+          "cachedResultUrl": "https://airtable.com/appxJjHJox2sYsKKW/tbl32QXBMswobW3wq"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Current Price": "={{ $('Airtable').item.json.fields['Current Price'] }}",
+            "Market Cap": "={{ $('Airtable').item.json.fields['Market Cap'] }}",
+            "Price Change 24h (%)": "={{ $('Airtable').item.json.fields['Price Change 24h (%)'] }}",
+            "Previous Day High": "={{ $json['2'] }}",
+            "Previous Day Low": "={{ $json['3'] }}",
+            "Previous Day Open": "={{ $json['1'] }}",
+            "Previous Day Close": "={{ $json['4'] }}",
+            "id": "={{ $('Airtable').item.json.id }}",
+            "Coin Name": "={{ $('Airtable').item.json.fields['Coin Name'] }}",
+            "Symbol": "={{ $('Airtable').item.json.fields.Symbol }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Coin Name",
+              "displayName": "Coin Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Symbol",
+              "displayName": "Symbol",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Current Price",
+              "displayName": "Current Price",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Market Cap",
+              "displayName": "Market Cap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Price Change 24h (%)",
+              "displayName": "Price Change 24h (%)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Previous Day High",
+              "displayName": "Previous Day High",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Previous Day Low",
+              "displayName": "Previous Day Low",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Previous Day Open",
+              "displayName": "Previous Day Open",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Previous Day Close",
+              "displayName": "Previous Day Close",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        -400
+      ],
+      "id": "f6bebca8-3880-4910-b504-27768e315785",
+      "name": "AirtableUpdate",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "kfcG3zxvCe72KMOL",
+          "name": "Airtable account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://api.binance.com/api/v3/klines?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "symbol",
+              "value": "={{ $json.fields.Symbol }}"
+            },
+            {
+              "name": "interval",
+              "value": "1d"
+            },
+            {
+              "name": "limit",
+              "value": "2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        340,
+        -440
+      ],
+      "id": "50b199fb-67b4-481e-b601-d81673740643",
+      "name": "Binance- HTTP Request",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -380
+      ],
+      "id": "c5433cfe-dd79-4207-a82a-d5dd1dfdd23a",
+      "name": "Filter Out",
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "CoinGecko-Top50",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CoinGecko-Top50": {
+      "main": [
+        [
+          {
+            "node": "toUpperCase.js",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "toUpperCase.js": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Binance- HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "AirtableUpdate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AirtableUpdate": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Binance- HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Filter Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Pacific/Auckland",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "62e44446-053f-45c3-98d6-cccab2522076",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "11888ffa3e47806faf21601c627c5f9059006bec22e546a91fcf0114674fe8a2"
+  },
+  "id": "MtBTZS2pBSNYbeZY",
+  "tags": []
+}
