@@ -2,7 +2,7 @@
 Track price ranges (CPR) and send alerts when price is inside or near the range.
 
 
-Day 1 
+Day 1 -2
 
 What I Did:
 
