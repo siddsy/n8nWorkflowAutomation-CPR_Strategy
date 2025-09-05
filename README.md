@@ -2,7 +2,7 @@
 Track price ranges (CPR) and send alerts when price is inside or near the range.
 
 
-Day 1 -4
+Day 1 -5
 
 What I Did:
 
@@ -16,6 +16,6 @@ Loop through each coin, get last 2 daily candles (OHLC) from Binance in order to
 
 Update Airtable with previous day’s Open, High, Low, Close.
 
-Replace some nodes for better handling
+Replace some nodes for better handling and completed udemy course
 
 
